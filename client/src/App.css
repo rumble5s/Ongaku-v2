@@ -1,0 +1,46 @@
+.body {
+  width: 100%;
+  height: 100%;
+  padding: 10%;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.box {
+  width: 40%;
+  height: 70%;
+  border-width: 3px;
+  border-radius: 5%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.listitem {
+  height: 80%;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.listitem::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  width: 90%;
+  height: 17%;
+  border-width: 3px;
+  border-radius: 3%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+  margin: 1rem;
+  display: flex;
+  justify-content: space-between;
+  color: whitesmoke;
+}
+
+.addbox {
+  top: 10%;
+  left: 30%;
+  position: absolute;
+}
