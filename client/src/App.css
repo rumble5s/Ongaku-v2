@@ -44,3 +44,12 @@
   left: 30%;
   position: absolute;
 }
+
+.addbox .body {
+  height: 70%;
+  margin-bottom: 10%;
+}
+
+.addbox .body .box {
+  height: 100%;
+}

@@ -12,10 +12,11 @@ class BaseServiceClass {
     return Object;
   }
 
-  async Get(opt) {
+  async Get(query, proj) {
     const listObject = await server.mongo.db
       .collection(this.name)
-      .find(opt)
+      .find(query)
+      .project(proj)
       .toArray();
     return listObject;
   }
@@ -32,7 +33,7 @@ class BaseServiceClass {
       .collection(this.name)
       .updateOne(
         { _id: new server.mongo.ObjectId(ObjectId) },
-        { $set: newState },
+        { $set: newState }
       );
   }
 

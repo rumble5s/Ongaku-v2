@@ -8,7 +8,7 @@ const filesetting = require("../constants/filesetting.constant");
 
 class MusicController {
   async Search(request, reply) {
-    let musics = await MusicService.Get({});
+    let musics = await MusicService.Get({},{});
 
     musics = musics.filter((item) => item.name.includes(request.body.search));
 

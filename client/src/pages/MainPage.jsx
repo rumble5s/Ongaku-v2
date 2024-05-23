@@ -26,7 +26,7 @@ function CreateRoomBox() {
       localStorage.setItem("room", JSON.stringify(response.data));
       navigate("/room");
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
@@ -70,7 +70,7 @@ function ListRoomBox() {
 
       setListRoom(response.data);
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   }, 1000);
 

@@ -49,7 +49,7 @@ export function LoginPage() {
 
   return (
     <Layout>
-      {user !== null ? (
+      {user != null ? (
         <div>You have been logged in !</div>
       ) : (
         <form

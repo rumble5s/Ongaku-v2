@@ -1,5 +1,4 @@
 const RoomService = require("../services/room.service");
-const Music = require("./music.controller");
 const statuscode = require("../constants/statuscode.constant");
 
 class RoomController {
@@ -21,7 +20,7 @@ class RoomController {
   }
 
   async Search(request, reply) {
-    let rooms = await RoomService.Get({});
+    let rooms = await RoomService.Get({}, {});
 
     rooms = rooms.filter((item) => item.name.includes(request.body.search));
 
@@ -201,7 +200,8 @@ class RoomController {
       return;
     }
 
-    const music = await Music.GetOne(musicId);
+    const MusicService = require("../services/music.service");
+    const music = await MusicService.GetOne(musicId);
 
     socket.to(`room${roomId}`).emit("add music", music);
     socket.emit("add music", music);

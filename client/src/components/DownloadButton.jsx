@@ -13,7 +13,6 @@ export function DownloadButton({ fileurl }) {
           responseType: "blob",
         },
       });
-      console.log(JSON.stringify(response.data));
       const mp3 = new Blob([response.data], { type: "audio/mp3" });
       const url = window.URL.createObjectURL(mp3);
       const link = document.createElement("a");
@@ -26,7 +25,7 @@ export function DownloadButton({ fileurl }) {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
