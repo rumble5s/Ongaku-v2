@@ -6,6 +6,8 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
     healthcheck:
       test: echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin -u $$MONGO_INITDB_ROOT_USERNAME -p $$MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1
       interval: 10s
@@ -23,6 +25,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    volumes:
+      - backend_data:/app/data
 
   frontend:
     build:
@@ -34,5 +38,7 @@ services:
     network_mode: "host"
     depends_on:
       - backend
-    environment:
-      - VITE_BASE_URL=http://127.0.0.1:3000/
+
+volumes:
+  mongodb_data:
+  backend_data:

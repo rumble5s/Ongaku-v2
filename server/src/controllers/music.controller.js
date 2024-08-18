@@ -8,7 +8,7 @@ const filesetting = require("../constants/filesetting.constant");
 
 class MusicController {
   async Search(request, reply) {
-    let musics = await MusicService.Get({},{});
+    let musics = await MusicService.Get({}, {});
 
     musics = musics.filter((item) => item.name.includes(request.body.search));
 
@@ -53,6 +53,8 @@ class MusicController {
 
   async Upload(request, reply) {
     const data = await request.file();
+    const path = require("path");
+    const musicPath = path.resolve(__dirname, "../music");
 
     if (data.fileSize > filesetting.filesize) {
       reply
@@ -67,14 +69,12 @@ class MusicController {
 
     MusicService.Update(newMusic.insertedId.toString(), {
       name: data.fields.name.value,
-      url: `/home/teemo/Teemo/ongaku-v2/server/src/music/${newMusic.insertedId.toString()}.mp3`,
+      url: `${musicPath}/${newMusic.insertedId.toString()}.mp3`,
     });
 
     await pump(
       data.file,
-      fs.createWriteStream(
-        `/home/teemo/Teemo/ongaku-v2/server/src/music/${newMusic.insertedId.toString()}.mp3`
-      )
+      fs.createWriteStream(`${musicPath}/${newMusic.insertedId.toString()}.mp3`)
     );
 
     reply
