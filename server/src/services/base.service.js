@@ -1,4 +1,4 @@
-const server = require("../initServer");
+const connectToDatabase = require("../server");
 
 class BaseServiceClass {
   constructor(name) {
@@ -6,14 +6,14 @@ class BaseServiceClass {
   }
 
   async Create(newObject) {
-    const Object = await server.mongo.db
-      .collection(this.name)
-      .insertOne(newObject);
+    const database = await connectToDatabase();
+    const Object = await database.db.collection(this.name).insertOne(newObject);
     return Object;
   }
 
   async Get(query, proj) {
-    const listObject = await server.mongo.db
+    const database = await connectToDatabase();
+    const listObject = await database.db
       .collection(this.name)
       .find(query)
       .project(proj)
@@ -22,25 +22,25 @@ class BaseServiceClass {
   }
 
   async GetOne(ObjectId) {
-    const Object = await server.mongo.db
+    const database = await connectToDatabase();
+    const Object = await database.db
       .collection(this.name)
-      .findOne({ _id: new server.mongo.ObjectId(ObjectId) });
+      .findOne({ _id: new database.ObjectId(ObjectId) });
     return Object;
   }
 
   async Update(ObjectId, newState) {
-    server.mongo.db
+    const database = await connectToDatabase();
+    database.db
       .collection(this.name)
-      .updateOne(
-        { _id: new server.mongo.ObjectId(ObjectId) },
-        { $set: newState }
-      );
+      .updateOne({ _id: new database.ObjectId(ObjectId) }, { $set: newState });
   }
 
   async Delete(ObjectId) {
-    server.mongo.db
+    const database = await connectToDatabase();
+    database.db
       .collection(this.name)
-      .deleteOne({ _id: new server.mongo.ObjectId(ObjectId) });
+      .deleteOne({ _id: new database.ObjectId(ObjectId) });
   }
 }
 

@@ -1,16 +1,7 @@
-const server = require("./initServer");
-const fastifyIO = require("fastify-socket.io");
-const Room = require("./controllers/room.controller");
+const Room = require("../controllers/room.controller");
 
-server.register(fastifyIO, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "PUT", "POST", "DELETE"],
-  },
-});
-
-server.ready().then(() => {
-  server.io.on("connection", (socket) => {
+module.exports = function (io) {
+  io.on("connection", (socket) => {
     console.log(`new socket : ${socket.id}`);
 
     socket.on("join room", async function (roomId, userId) {
@@ -53,4 +44,4 @@ server.ready().then(() => {
       console.log(`${socket.id} disconnect`);
     });
   });
-});
+};
