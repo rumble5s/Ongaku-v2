@@ -5,9 +5,9 @@ const statuscode = require("../constants/statuscode.constant");
 
 class UserController {
   async SignUp(request, reply) {
-    const user = await UserService.Get({ username: request.body.username }, {});
+    const check = await UserService.Get({ username: request.body.username }, {});
 
-    if (user.length) {
+    if (check.length) {
       reply
         .status(statuscode.error)
         .send("Failed! Username is already in use!");
@@ -23,17 +23,19 @@ class UserController {
   }
 
   async SignIn(request, reply) {
-    const user = await UserService.Get(
+    const check = await UserService.Get(
       {
         username: request.body.username,
         password: request.body.password,
       },
       {}
     );
-    if (!user.length) {
+    if (!check.length) {
       reply.status(statuscode.error).send("Wrong username or password!");
       return;
     }
+
+    const user = check[0];
 
     const token = jwt.sign({ id: user._id }, secret.secret, {
       algorithm: "HS256",
