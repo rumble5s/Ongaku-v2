@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UserService = require("../services/user.service");
-const secret = require("../config/secretkey.config");
+require("dotenv").config();
 const statuscode = require("../constants/statuscode.constant");
 
 class UserController {
@@ -37,7 +37,7 @@ class UserController {
 
     const user = check[0];
 
-    const token = jwt.sign({ id: user._id }, secret.secret, {
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       algorithm: "HS256",
       allowInsecureKeySizes: true,
     });

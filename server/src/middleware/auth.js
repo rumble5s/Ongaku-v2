@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const secret = require("../config/secretkey.config");
+require("dotenv").config();
 const statuscode = require("../constants/statuscode.constant");
 
 function verifyToken(request, reply, done) {
@@ -9,7 +9,7 @@ function verifyToken(request, reply, done) {
     return reply.status(statuscode.error).send("No token provided!");
   }
 
-  jwt.verify(token, secret.secret, (err, decoded) => {
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
     if (err) {
       return reply.status(statuscode.error).send("Unauthorized!");
     }

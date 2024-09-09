@@ -1,4 +1,5 @@
 const statuscode = require("./constants/statuscode.constant");
+require("dotenv").config();
 
 //Init server
 const server = require("fastify")();
@@ -7,7 +8,7 @@ const server = require("fastify")();
 const cors = require("@fastify/cors");
 
 server.register(cors, {
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND,
   methods: ["GET", "PUT", "POST", "DELETE"],
 });
 
@@ -21,7 +22,7 @@ async function connectToDatabase() {
     try {
       await server.register(mongo, {
         forceClose: true,
-        url: "mongodb://127.0.0.1:27017/ongaku-v2",
+        url: process.env.DATABASE,
       });
       database = server.mongo;
     } catch (err) {
@@ -80,7 +81,7 @@ const socketIo = require("./socketIo/socketIo");
 
 server.register(fastifyIO, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND,
     methods: ["GET", "PUT", "POST", "DELETE"],
   },
 });
