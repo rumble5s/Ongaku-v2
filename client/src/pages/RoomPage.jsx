@@ -56,7 +56,11 @@ export function RoomPage() {
     const myroom = JSON.parse(localStorage.getItem("room"));
 
     const initializeSocket = async () => {
-      newSocket = io(import.meta.env.VITE_BASE_URL);
+      newSocket = io(import.meta.env.VITE_BASE_URL, {
+        auth: {
+          token: user.token,
+        },
+      });
 
       newSocket.on("error", function (message) {
         alert(message);

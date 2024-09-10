@@ -78,6 +78,7 @@ server.addHook("onRequest", (request, reply, done) => {
 //SocketIo
 const fastifyIO = require("fastify-socket.io");
 const socketIo = require("./socketIo/socketIo");
+const socketAuth = require("./middleware/socketAuth");
 
 server.register(fastifyIO, {
   cors: {
@@ -87,6 +88,7 @@ server.register(fastifyIO, {
 });
 
 server.ready().then(() => {
+  server.io.use(socketAuth);
   socketIo(server.io);
 });
 
