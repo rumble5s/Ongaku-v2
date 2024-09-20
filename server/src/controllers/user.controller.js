@@ -1,41 +1,39 @@
 const jwt = require("jsonwebtoken");
-const UserService = require("../services/user.service");
+const UserModel = require("../models/user.model");
 require("dotenv").config();
 const statuscode = require("../constants/statuscode.constant");
 
 class UserController {
-  async SignUp(request, reply) {
-    const check = await UserService.Get({ username: request.body.username }, {});
+  static async SignUp(request, reply) {
+    const check = await UserModel.exists({ email: request.body.email });
 
-    if (check.length) {
-      reply
-        .status(statuscode.error)
-        .send("Failed! Username is already in use!");
+    if (check) {
+      reply.status(statuscode.error).send("Failed! Email is already in use!");
       return;
     }
 
-    UserService.Create({
+    const newUser = new UserModel({
       username: request.body.username,
+      email: request.body.email,
       password: request.body.password,
+      isActivate: false,
     });
+
+    await newUser.save();
 
     reply.status(statuscode.success).send("Successful!");
   }
 
-  async SignIn(request, reply) {
-    const check = await UserService.Get(
-      {
-        username: request.body.username,
-        password: request.body.password,
-      },
-      {}
-    );
-    if (!check.length) {
-      reply.status(statuscode.error).send("Wrong username or password!");
+  static async SignIn(request, reply) {
+    const user = await UserModel.findOne({
+      email: request.body.email,
+      password: request.body.password,
+    });
+
+    if (!user) {
+      reply.status(statuscode.error).send("Wrong email or password!");
       return;
     }
-
-    const user = check[0];
 
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       algorithm: "HS256",
@@ -50,6 +48,4 @@ class UserController {
   }
 }
 
-const User = new UserController("User");
-
-module.exports = User;
+module.exports = UserController;

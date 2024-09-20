@@ -1,4 +1,4 @@
-const MusicService = require("../services/music.service");
+const MusicModel = require("../models/music.model");
 const fs = require("fs");
 const util = require("node:util");
 const { pipeline } = require("node:stream");
@@ -7,17 +7,16 @@ const statuscode = require("../constants/statuscode.constant");
 const filesetting = require("../constants/filesetting.constant");
 
 class MusicController {
-  async Search(request, reply) {
-    let musics = await MusicService.Get({}, {});
+  static async Search(request, reply) {
+    let musics = await MusicModel.find();
 
     musics = musics.filter((item) => item.name.includes(request.body.search));
 
     reply.status(statuscode.success).send(musics);
   }
 
-  async Play(request, reply) {
-    const musicId = request.params.musicId;
-    const music = await MusicService.GetOne(musicId);
+  static async Play(request, reply) {
+    const music = await MusicModel.findById(request.params.musicId);
 
     if (!music) return reply.status(statuscode.error).send("File not found");
 
@@ -51,7 +50,7 @@ class MusicController {
     }
   }
 
-  async Upload(request, reply) {
+  static async Upload(request, reply) {
     const data = await request.file();
     const path = require("path");
     const musicPath = path.resolve(__dirname, "../music");
@@ -62,27 +61,28 @@ class MusicController {
         .send({ error: "Please upload smaller file" });
     }
 
-    const newMusic = await MusicService.Create({
+    const newMusic = new MusicModel({
       name: data.fields.name.value,
       url: "",
     });
 
-    MusicService.Update(newMusic.insertedId.toString(), {
-      name: data.fields.name.value,
-      url: `${musicPath}/${newMusic.insertedId.toString()}.mp3`,
-    });
+    await newMusic.save();
+
+    await MusicModel.updateOne(
+      { _id: newMusic._id.toString() },
+      {
+        name: data.fields.name.value,
+        url: `${musicPath}/${newMusic._id.toString()}.mp3`,
+      }
+    );
 
     await pump(
       data.file,
-      fs.createWriteStream(`${musicPath}/${newMusic.insertedId.toString()}.mp3`)
+      fs.createWriteStream(`${musicPath}/${newMusic._id.toString()}.mp3`)
     );
 
-    reply
-      .status(statuscode.success)
-      .send({ _id: newMusic.insertedId.toString() });
+    reply.status(statuscode.success).send({ _id: newMusic._id.toString() });
   }
 }
 
-const Music = new MusicController("Music");
-
-module.exports = Music;
+module.exports = MusicController;

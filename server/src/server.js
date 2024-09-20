@@ -13,28 +13,8 @@ server.register(cors, {
 });
 
 //Connect database
-const mongo = require("@fastify/mongodb");
-
-let database = null;
-
-async function connectToDatabase() {
-  if (!database) {
-    try {
-      await server.register(mongo, {
-        forceClose: true,
-        url: process.env.DATABASE,
-      });
-      database = server.mongo;
-    } catch (err) {
-      console.error("Error connect database", err);
-      throw err;
-    }
-  }
-  return database;
-}
-
-connectToDatabase();
-module.exports = connectToDatabase;
+const connectDB = require("./config/connectDB");
+connectDB();
 
 //Setting multipart
 const filesetting = require("./constants/filesetting.constant");
