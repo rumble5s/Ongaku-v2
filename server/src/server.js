@@ -13,7 +13,7 @@ server.register(cors, {
 });
 
 //Connect database
-const connectDB = require("./config/connectDB");
+const connectDB = require("./configs/connectDB");
 connectDB();
 
 //Setting multipart
@@ -42,13 +42,22 @@ server.register(require("./routes/music.route"), { prefix: "/music" });
 server.register(require("./routes/playlist.route"), { prefix: "/playlist" });
 
 //Middleware verify token
-const verifyToken = require("./middleware/auth");
+const verifyToken = require("./middlewares/auth");
 
 server.addHook("onRequest", (request, reply, done) => {
-  const exceptRoutes = ["/user/sign_in", "/user/sign_up"];
+  const exceptRoutes = [
+    "/user/sign_in",
+    "/user/sign_up",
+    "/user/forget_password",
+  ];
   const isMusicRoute = request.url.startsWith("/music/play");
+  const isVerifyAccountRoute = request.url.startsWith("/user/verify_email");
 
-  if (isMusicRoute || exceptRoutes.includes(request.url)) {
+  if (
+    isMusicRoute ||
+    isVerifyAccountRoute ||
+    exceptRoutes.includes(request.url)
+  ) {
     done();
   } else {
     verifyToken(request, reply, done);
@@ -58,7 +67,7 @@ server.addHook("onRequest", (request, reply, done) => {
 //SocketIo
 const fastifyIO = require("fastify-socket.io");
 const socketIo = require("./socketIo/socketIo");
-const socketAuth = require("./middleware/socketAuth");
+const socketAuth = require("./middlewares/socketAuth");
 
 server.register(fastifyIO, {
   cors: {

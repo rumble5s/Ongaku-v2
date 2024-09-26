@@ -1,5 +1,5 @@
 const PlaylistController = require("../controllers/playlist.controller");
-const CatchAsyncError = require("../middleware/catchAsyncError");
+const CatchAsyncError = require("../middlewares/catchAsyncError");
 
 module.exports = function (fastify, opts, done) {
   fastify.post("/list", CatchAsyncError(PlaylistController.List));

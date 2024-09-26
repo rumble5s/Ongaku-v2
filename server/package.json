@@ -17,6 +17,7 @@
     "fastify-socket.io": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.2",
+    "nodemailer": "^6.9.15",
     "socket.io": "^4.7.4"
   }
 }
